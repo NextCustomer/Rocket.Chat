@@ -3,3 +3,17 @@
 LICENSE
 README.md
 docker-compose.yml
+.circleci
+.docker
+.docker-mongo
+.github
+.houston
+.idea
+.meteor/local
+.openshift
+.scripts
+.snapcraft
+.storybook
+.vscode
+tests/
+node_modules/
