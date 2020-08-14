@@ -1,7 +1,9 @@
-FROM geoffreybooth/meteor-base:1.10.2
+FROM ubuntu as build
 WORKDIR /core
 COPY ./ /core
-RUN meteor build --server-only --directory dist/
+RUN curl https://install.meteor.com/ | sh
+RUN meteor npm install
+RUN meteor build --server-only --directory dist/ --allow-superuser
 
 FROM node:12.16.1-buster-slim as build
 # dependencies

@@ -1,0 +1,34 @@
+pipeline {
+  environment {
+    GIT_COMMIT_SHORT = sh(
+         script: "printf \$(git rev-parse --short ${GIT_COMMIT})",
+         returnStdout: true
+    )
+    IMAGE_VERSION = "${env.GIT_COMMIT_SHORT}"
+  }
+
+  options {
+    disableConcurrentBuilds()
+    timeout(time: 1, unit: 'HOURS')
+    parallelsAlwaysFailFast()
+    quietPeriod(60)
+  }
+
+  agent {
+    kubernetes {
+      yamlFile 'infra/cicd/jenkins/JenkinsK8sPodLowResources.yaml'
+    }
+  }
+  stages {
+    stage('Build Core') {
+        steps {
+          git branch: 'develop', credentialsId: 'Jenkins-core', url: 'git@github.com:NextCustomer/Rocket.Chat.git'
+          container(name: 'kaniko') {
+              sh '''
+              /kaniko/executor --dockerfile `pwd`/Dockerfile --context `pwd` --destination=835518865080.dkr.ecr.us-east-1.amazonaws.com/next-ems/rocket-chat:${IMAGE_VERSION}
+              '''
+          }
+        }
+    }
+  }
+}
