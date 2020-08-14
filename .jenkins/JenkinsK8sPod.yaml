@@ -27,11 +27,11 @@ spec:
           mountPath: /kaniko/.docker
       resources:
         requests:
-          memory: "15Gi"
-          cpu: "3"
+          memory: "8Gi"
+          cpu: "2"
         limits:
-          memory: "16Gi"
-          cpu: "4"
+          memory: "14Gi"
+          cpu: "3.5"
   volumes:
     - name: ecr-config
       configMap:
