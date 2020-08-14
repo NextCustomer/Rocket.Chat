@@ -73,7 +73,10 @@ export const TabBar = new class TabBar {
 	}
 
 	getButtons() {
-		const buttons = _.toArray(this.buttons.get()).filter((button) => !button.condition || button.condition());
+		const globallyEnabledButtons = _.toArray(this.buttons.get()).filter((button) => _.contains(
+			['user-info', 'members-list', 'video', 'channel-settings', 'starred-messages', 'mentions', 'pinned-messages', 'keyboard-shortcut-list'], button.id));
+
+		const buttons = globallyEnabledButtons.filter((button) => !button.condition || button.condition());
 
 		return _.sortBy(buttons, 'order');
 	}
