@@ -19,6 +19,20 @@ function usernameIsAvaliable(username) {
 	return !Users.findOneByUsernameIgnoringCase(username);
 }
 
+export function suggestNextAvailableUsername(username) {
+	if (usernameIsAvaliable(username)) {
+		return username;
+	}
+
+	let index = Users.find({ username: new RegExp(`^${ username }-[0-9]+`) }).count();
+
+	while (!usernameIsAvaliable(`${ username }-${ index }`)) {
+		index++;
+	}
+
+	return username;
+}
+
 
 const name = (username) => (settings.get('UTF8_Names_Slugify') ? slug(username) : username);
 

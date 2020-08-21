@@ -13,7 +13,7 @@ export { deleteUser } from './deleteUser';
 export { getFullUserData } from './getFullUserData';
 export { getRoomByNameOrIdWithOptionToJoin } from './getRoomByNameOrIdWithOptionToJoin';
 export { getUserSingleOwnedRooms } from './getUserSingleOwnedRooms';
-export { generateUsernameSuggestion } from './getUsernameSuggestion';
+export { generateUsernameSuggestion, suggestNextAvailableUsername } from './getUsernameSuggestion';
 export { insertMessage } from './insertMessage';
 export { isTheLastMessage } from './isTheLastMessage';
 export { loadMessageHistory } from './loadMessageHistory';

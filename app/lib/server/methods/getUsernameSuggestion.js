@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 
-import { generateUsernameSuggestion } from '../functions';
+import { generateUsernameSuggestion, suggestNextAvailableUsername } from '../functions';
 
 Meteor.methods({
 	getUsernameSuggestion() {
@@ -13,5 +13,12 @@ Meteor.methods({
 		const user = Meteor.user();
 
 		return generateUsernameSuggestion(user);
+	},
+	suggestNextAvailableUsername(username) {
+		if (!Meteor.userId()) {
+			throw new Meteor.Error('not-authorized');
+		}
+
+		return suggestNextAvailableUsername(username);
 	},
 });

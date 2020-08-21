@@ -620,6 +620,14 @@ API.v1.addRoute('users.getUsernameSuggestion', { authRequired: true }, {
 	},
 });
 
+API.v1.addRoute('users.suggestNextAvailableUsername', { authRequired: true }, {
+	get() {
+		const result = Meteor.runAsUser(this.userId, () => Meteor.call('suggestNextAvailableUsername'));
+
+		return API.v1.success({ result });
+	},
+});
+
 API.v1.addRoute('users.generatePersonalAccessToken', { authRequired: true, twoFactorRequired: true }, {
 	post() {
 		const { tokenName, bypassTwoFactor } = this.bodyParams;
