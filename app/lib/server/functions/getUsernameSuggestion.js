@@ -30,7 +30,7 @@ export function suggestNextAvailableUsername(username) {
 		index++;
 	}
 
-	return username;
+	return `${ username }-${ index }`;
 }
 
 
