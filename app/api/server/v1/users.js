@@ -621,8 +621,13 @@ API.v1.addRoute('users.getUsernameSuggestion', { authRequired: true }, {
 });
 
 API.v1.addRoute('users.suggestNextAvailableUsername', { authRequired: true }, {
-	get() {
-		const result = Meteor.runAsUser(this.userId, () => Meteor.call('suggestNextAvailableUsername'));
+	post() {
+		const { username } = this.bodyParams;
+		if (!username) {
+			return API.v1.failure('The \'username\' param is required');
+		}
+
+		const result = Meteor.runAsUser(this.userId, () => Meteor.call('suggestNextAvailableUsername', { username }));
 
 		return API.v1.success({ result });
 	},
