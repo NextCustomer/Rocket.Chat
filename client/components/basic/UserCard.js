@@ -83,7 +83,9 @@ const UserCard = forwardRef(({
 		<Username status={status} name={name}/>
 		{nickname && <Info title={t('Nickname')}>{nickname}</Info>}
 		{ customStatus && <Info>{customStatus}</Info> }
-		<Roles>{roles}</Roles>
+{
+	  // hiding <Roles>{roles}</Roles>
+}
 		<Info>{localTime}</Info>
 		{ bio && <Info withTruncatedText={false} style={clampStyle} height='x60'>{bio}</Info> }
 		{open && <a onClick={open}>{t('See_full_profile')}</a>}

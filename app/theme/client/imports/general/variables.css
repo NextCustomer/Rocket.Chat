@@ -306,7 +306,7 @@
 	/*
 	* Avatar
 	*/
-	--avatar-radius: var(--border-radius);
+	--avatar-radius: 15px;
 	--avatar-initials-text-size: 22px;
 	--avatar-initials-text-weight: 700;
 
