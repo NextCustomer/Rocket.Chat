@@ -52,12 +52,12 @@ export const UserInfo = React.memo(function UserInfo({
 		<Margins block='x4'>
 			<UserCard.Username name={name || username} status={status} />
 			<Info>{customStatus}</Info>
-
-			{!!roles && <>
-				<Label>{t('Roles')}</Label>
-				<UserCard.Roles>{roles}</UserCard.Roles>
-			</>}
-
+{
+//			{!!roles && <>
+//				<Label>{t('Roles')}</Label>
+//				<UserCard.Roles>{roles}</UserCard.Roles>
+//			</>}
+}
 			{Number.isInteger(utcOffset) && <>
 				<Label>{t('Local Time')}</Label>
 				<Info><UTCClock utcOffset={utcOffset}/></Info>
@@ -68,9 +68,10 @@ export const UserInfo = React.memo(function UserInfo({
 				<Info>{username}</Info>
 			</>}
 
-			<Label>{t('Last_login')}</Label>
-			<Info>{lastLogin ? timeAgo(lastLogin) : t('Never')}</Info>
-
+{//hiding last login
+			// <Label>{t('Last_login')}</Label>
+			// <Info>{lastLogin ? timeAgo(lastLogin) : t('Never')}</Info>
+}
 			{name && <>
 				<Label>{t('Full Name')}</Label>
 				<Info>{name}</Info>
@@ -91,25 +92,26 @@ export const UserInfo = React.memo(function UserInfo({
 					<Box is='a' withTruncatedText href={`tel:${ phone }`}>{phone}</Box>
 				</Info>
 			</>}
+{ //hiding email address
 
-			{email && <> <Label>{t('Email')}</Label>
-				<Info display='flex' flexDirection='row' alignItems='center'>
-					<Box is='a' withTruncatedText href={`mailto:${ email.address }`}>{email.address}</Box>
-					<Margins inline='x4'>
-						{email.verified && <Tag variant='primary'>{t('Verified')}</Tag>}
-						{email.verified || <Tag disabled>{t('Not_verified')}</Tag>}
-					</Margins>
-				</Info>
-			</>}
-
+//			{email && <> <Label>{t('Email')}</Label>
+//				<Info display='flex' flexDirection='row' alignItems='center'>
+//					<Box is='a' withTruncatedText href={`mailto:${ email.address }`}>{email.address}</Box>
+//					<Margins inline='x4'>
+//						{email.verified && <Tag variant='primary'>{t('Verified')}</Tag>}
+//						{email.verified || <Tag disabled>{t('Not_verified')}</Tag>}
+//					</Margins>
+//				</Info>
+//			</>}
+}
 			{ customFields && Object.entries(customFields).map(([label, value]) => <React.Fragment key={label}>
 				<Label>{t(label)}</Label>
 				<Info>{value}</Info>
 			</React.Fragment>) }
-
-			<Label>{t('Created_at')}</Label>
-			<Info>{timeAgo(createdAt)}</Info>
-
+{ //hiding created at details
+//			<Label>{t('Created_at')}</Label>
+//			<Info>{timeAgo(createdAt)}</Info>
+}
 		</Margins>
 
 	</VerticalBar.ScrollableContent>;
