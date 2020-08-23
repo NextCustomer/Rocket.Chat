@@ -34,7 +34,7 @@ pipeline {
         steps {
             container(name: 'kubectl') {
                 sh '''
-                kubectl set image deployment/my-rocketchat-rocketchat rocketchat=835518865080.dkr.ecr.us-east-1.amazonaws.com/next-ems/rocket-chat:${IMAGE_VERSION} --namespace shared --record
+                kubectl set image deployment/rocketchat-rocketchat rocketchat=835518865080.dkr.ecr.us-east-1.amazonaws.com/next-ems/rocket-chat:${IMAGE_VERSION} --namespace shared --record
                 '''
             }
         }
