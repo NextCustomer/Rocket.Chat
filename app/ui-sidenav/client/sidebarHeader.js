@@ -47,6 +47,7 @@ const toolbarButtons = (/* user */) => [{
 {
 	name: t('Search'),
 	icon: 'magnifier',
+	condition: () => hasAtLeastOnePermission(['manage-emoji', 'manage-oauth-apps', 'manage-outgoing-integrations', 'manage-incoming-integrations', 'manage-own-outgoing-integrations', 'manage-own-incoming-integrations', 'manage-selected-settings', 'manage-sounds', 'view-logs', 'view-privileged-setting', 'view-room-administration', 'view-statistics', 'view-user-administration', 'access-setting-permissions']),
 	action: () => {
 		toolbarSearch.show(false);
 	},
@@ -54,6 +55,7 @@ const toolbarButtons = (/* user */) => [{
 {
 	name: t('Directory'),
 	icon: 'discover',
+	condition: () => hasAtLeastOnePermission(['manage-emoji', 'manage-oauth-apps', 'manage-outgoing-integrations', 'manage-incoming-integrations', 'manage-own-outgoing-integrations', 'manage-own-incoming-integrations', 'manage-selected-settings', 'manage-sounds', 'view-logs', 'view-privileged-setting', 'view-room-administration', 'view-statistics', 'view-user-administration', 'access-setting-permissions']),
 	action: () => {
 		menu.close();
 		FlowRouter.go('directory');
