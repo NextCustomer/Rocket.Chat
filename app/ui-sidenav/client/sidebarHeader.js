@@ -305,36 +305,7 @@ Template.sidebarHeader.events({
 							{
 								title: t('User'),
 								items: userStatusList,
-							},
-							{
-								items: [
-									{
-										icon: 'user',
-										name: t('My_Account'),
-										type: 'open',
-										id: 'account',
-										action: () => {
-											FlowRouter.go('account');
-											popover.close();
-										},
-									},
-									{
-										icon: 'sign-out',
-										name: t('Logout'),
-										type: 'open',
-										id: 'logout',
-										action: () => {
-											Meteor.logout(() => {
-												callbacks.run('afterLogoutCleanUp', user);
-												Meteor.call('logoutCleanUp', user);
-												FlowRouter.go('home');
-												popover.close();
-											});
-										},
-									},
-								],
-							},
-						],
+							}],
 					},
 				],
 				currentTarget: e.currentTarget,
