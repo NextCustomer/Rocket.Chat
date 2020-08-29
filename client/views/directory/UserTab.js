@@ -54,7 +54,6 @@ function UserTable({
 
 	const header = useMemo(() => [
 		<Th key={'name'} direction={sort[1]} active={sort[0] === 'name'} onClick={onHeaderClick} sort='name'>{t('Name')}</Th>,
-		mediaQuery && canViewFullOtherUserInfo && <Th key={'email'} direction={sort[1]} active={sort[0] === 'email'} onClick={onHeaderClick} sort='email' style={{ width: '200px' }} >{t('Email')}</Th>,
 		federation && <Th key={'origin'} direction={sort[1]} active={sort[0] === 'origin'} onClick={onHeaderClick} sort='origin' style={{ width: '200px' }} >{t('Domain')}</Th>,
 		mediaQuery && <Th key={'createdAt'} direction={sort[1]} active={sort[0] === 'createdAt'} onClick={onHeaderClick} sort='createdAt' style={{ width: '200px' }}>{t('Joined_at')}</Th>,
 	].filter(Boolean), [sort, onHeaderClick, t, mediaQuery, canViewFullOtherUserInfo, federation]);
@@ -88,10 +87,6 @@ function UserTable({
 				</Box>
 			</Flex.Container>
 		</Table.Cell>
-		{mediaQuery && canViewFullOtherUserInfo
-			&& <Table.Cell style={style} >
-				{emails && emails[0].address}
-			</Table.Cell>}
 		{federation
 		&& <Table.Cell style={style}>
 			{domain}
