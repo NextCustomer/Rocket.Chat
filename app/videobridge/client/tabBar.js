@@ -41,7 +41,7 @@ Meteor.startup(function() {
 	Tracker.autorun(function() {
 		if (settings.get('Jitsi_Enabled')) {
 			TabBar.addButton({
-				groups: ['direct', 'group'],
+				groups: ['direct'],
 				id: 'video',
 				i18nTitle: 'Call',
 				icon: 'video',
