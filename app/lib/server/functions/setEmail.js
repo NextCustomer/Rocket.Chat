@@ -53,7 +53,7 @@ const _setEmail = function(userId, email, shouldSendVerificationEmail = true) {
 	const user = Users.findOneById(userId);
 
 	// User already has desired username, return
-	if (user.emails && user.emails[0] && user.emails[0].address === email) {
+	if (user.emails && user.emails[0] && user.emails[0].address.toLowerCase() === email.toLowerCase()) {
 		return user;
 	}
 
