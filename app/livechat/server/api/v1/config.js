@@ -1,7 +1,8 @@
-import { Match, check } from 'meteor/check';
+import { check, Match } from 'meteor/check';
 
 import { API } from '../../../../api/server';
-import { findGuest, settings, online, findOpenRoom, getExtraConfigInfo, findAgent } from '../lib/livechat';
+import { findAgent, findGuest, findOpenRoom, getExtraConfigInfo, online, settings } from '../lib/livechat';
+import { Livechat } from '../../lib/Livechat';
 
 API.v1.addRoute('livechat/config', {
 	get() {
@@ -24,12 +25,24 @@ API.v1.addRoute('livechat/config', {
 			let agent;
 
 			if (guest) {
-				room = findOpenRoom(token);
+				if (department && guest.department !== department) {
+					Livechat.setDepartmentForGuest({
+						token,
+						department,
+					});
+				}
+
+				room = findOpenRoom(token, department);
 				agent = room && room.servedBy && findAgent(room.servedBy._id);
 			}
 			const extra = Promise.await(getExtraConfigInfo(room));
 			const { config: extraConfig = {} } = extra || {};
-			Object.assign(config, { online: status, guest, room, agent }, { ...extraConfig });
+			Object.assign(config, {
+				online: status,
+				guest,
+				room,
+				agent,
+			}, { ...extraConfig });
 
 			return API.v1.success({ config });
 		} catch (e) {
