@@ -138,6 +138,11 @@ Template.sidebarItem.events({
 			return !(((roomData.cl != null) && !roomData.cl) || ['d', 'l'].includes(roomData.t));
 		};
 
+		const isLiveChat = () => {
+			const roomData = Session.get(`roomData${ this.rid }`);
+			return roomData.t === 'l';
+		};
+
 		const canFavorite = settings.get('Favorite_Rooms') && ChatSubscription.find({ rid: this.rid }).count() > 0;
 		const isFavorite = () => {
 			const sub = ChatSubscription.findOne({ rid: this.rid }, { fields: { f: 1 } });
@@ -186,6 +191,16 @@ Template.sidebarItem.events({
 				name: t('Leave_room'),
 				type: 'sidebar-item',
 				id: 'leave',
+				modifier: 'error',
+			});
+		}
+
+		if (isLiveChat()) {
+			items.push({
+				icon: 'sign-out',
+				name: t('Close'),
+				type: 'sidebar-item',
+				id: 'close-live-chat',
 				modifier: 'error',
 			});
 		}

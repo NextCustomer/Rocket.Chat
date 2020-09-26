@@ -5,7 +5,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Template } from 'meteor/templating';
 import _ from 'underscore';
 
-import { hide, leave } from './ChannelActions';
+import { hide, leave, closeLiveChat } from './ChannelActions';
 import { messageBox } from './messageBox';
 import { MessageAction } from './MessageAction';
 import { RoomManager } from './RoomManager';
@@ -190,6 +190,10 @@ Template.popover.events({
 
 		if (action === 'leave') {
 			leave(template, rid, name);
+		}
+
+		if (action === 'close-live-chat') {
+			closeLiveChat(template, rid, name);
 		}
 
 		if (action === 'read') {
