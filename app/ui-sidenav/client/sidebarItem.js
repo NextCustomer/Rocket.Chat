@@ -138,6 +138,16 @@ Template.sidebarItem.events({
 			return !(((roomData.cl != null) && !roomData.cl) || ['d', 'l'].includes(roomData.t));
 		};
 
+		const isActiveLiveChat = () => {
+			const roomData = Session.get(`roomData${ this.rid }`);
+			return roomData && roomData.t === 'l' && roomData.servedBy;
+		};
+
+		const canHide = () => {
+			const roomData = Session.get(`roomData${ this.rid }`);
+			return (roomData && roomData.t !== 'l') || (roomData && roomData.t === 'l' && roomData.servedBy);
+		};
+
 		const canFavorite = settings.get('Favorite_Rooms') && ChatSubscription.find({ rid: this.rid }).count() > 0;
 		const isFavorite = () => {
 			const sub = ChatSubscription.findOne({ rid: this.rid }, { fields: { f: 1 } });
@@ -147,12 +157,16 @@ Template.sidebarItem.events({
 			return false;
 		};
 
-		const items = [{
-			icon: 'eye-off',
-			name: t('Hide_room'),
-			type: 'sidebar-item',
-			id: 'hide',
-		}];
+		const items = [];
+
+		if (canHide()) {
+			items.push({
+				icon: 'eye-off',
+				name: t('Hide_room'),
+				type: 'sidebar-item',
+				id: 'hide',
+			});
+		}
 
 		if (this.alert) {
 			items.push({
@@ -186,6 +200,16 @@ Template.sidebarItem.events({
 				name: t('Leave_room'),
 				type: 'sidebar-item',
 				id: 'leave',
+				modifier: 'error',
+			});
+		}
+
+		if (isActiveLiveChat()) {
+			items.push({
+				icon: 'sign-out',
+				name: t('Close'),
+				type: 'sidebar-item',
+				id: 'close-live-chat',
 				modifier: 'error',
 			});
 		}

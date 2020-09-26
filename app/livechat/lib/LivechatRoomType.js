@@ -5,7 +5,7 @@ import { ChatRoom } from '../../models';
 import { settings } from '../../settings';
 import { hasPermission } from '../../authorization';
 import { openRoom } from '../../ui-utils';
-import { RoomSettingsEnum, UiTextContext, RoomTypeRouteConfig, RoomTypeConfig } from '../../utils';
+import { RoomMemberActions, RoomSettingsEnum, UiTextContext, RoomTypeRouteConfig, RoomTypeConfig } from '../../utils';
 import { getAvatarURL } from '../../utils/lib/getAvatarURL';
 
 let LivechatInquiry;
@@ -85,12 +85,18 @@ export default class LivechatRoomType extends RoomTypeConfig {
 		}
 	}
 
+	allowMemberAction(room, action) {
+		return [RoomMemberActions.INVITE, RoomMemberActions.JOIN].includes(action);
+	}
+
 	getUiText(context) {
 		switch (context) {
 			case UiTextContext.HIDE_WARNING:
 				return 'Hide_Livechat_Warning';
 			case UiTextContext.LEAVE_WARNING:
-				return 'Hide_Livechat_Warning';
+				return 'Leave_Livechat_Warning';
+			case UiTextContext.CLOSE_WARNING:
+				return 'Leave_Livechat_Warning';
 			default:
 				return '';
 		}

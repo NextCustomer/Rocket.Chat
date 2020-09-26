@@ -71,6 +71,41 @@ export async function leave(type, rid, name) {
 	});
 }
 
+export async function closeLiveChat(type, rid, name) {
+	const warnText = roomTypes.getConfig(type).getUiText(UiTextContext.CLOSE_WARNING);
+
+	modal.open({
+		title: t('Are_you_sure'),
+		text: warnText ? t(warnText, name) : '',
+		type: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#DD6B55',
+		confirmButtonText: t('Yes_leave_it'),
+		cancelButtonText: t('Cancel'),
+		closeOnConfirm: false,
+		html: false,
+	}, async function(isConfirm) {
+		if (!isConfirm) {
+			return;
+		}
+		try {
+			await call('livechat:closeRoom', rid);
+			modal.close();
+			if (['live'].includes(FlowRouter.getRouteName()) && (Session.get('openedRoom') === rid)) {
+				FlowRouter.go('home');
+			}
+			RoomManager.close(rid);
+		} catch (error) {
+			return modal.open({
+				type: 'error',
+				title: t('Warning'),
+				text: handleError(error, false),
+				html: false,
+			});
+		}
+	});
+}
+
 export function erase(rid) {
 	modal.open({
 		title: t('Are_you_sure'),

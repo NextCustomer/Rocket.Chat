@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
-import { Match, check } from 'meteor/check';
+import { check, Match } from 'meteor/check';
 
-import { LivechatRooms, LivechatVisitors, LivechatCustomField } from '../../../../models';
+import { LivechatCustomField, LivechatRooms, LivechatVisitors } from '../../../../models';
 import { hasPermission } from '../../../../authorization';
 import { API } from '../../../../api/server';
 import { findGuest, normalizeHttpHeaderData } from '../lib/livechat';
@@ -15,7 +15,7 @@ API.v1.addRoute('livechat/visitor', {
 					token: String,
 					name: Match.Maybe(String),
 					email: Match.Maybe(String),
-					department: Match.Maybe(String),
+					department: String, // Mark department as always required
 					phone: Match.Maybe(String),
 					username: Match.Maybe(String),
 					customFields: Match.Maybe([
@@ -27,6 +27,16 @@ API.v1.addRoute('livechat/visitor', {
 					]),
 				}),
 			});
+
+			// TODO: Validate if actually this user
+			const user = Meteor.users.findOne(this.bodyParams.visitor.token);
+			if (!user) {
+				throw new Meteor.Error('error-invalid-user', 'Invalid user', { method: 'livechat/visitor' });
+			}
+
+			this.bodyParams.visitor.name = user.name;
+			this.bodyParams.visitor.email = user.emails[0].address;
+			this.bodyParams.visitor.username = user.username;
 
 			const { token, customFields } = this.bodyParams.visitor;
 			const guest = this.bodyParams.visitor;
