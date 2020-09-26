@@ -1052,10 +1052,10 @@ export const Livechat = {
 		const { message, name, email, department, host } = data;
 		const emailMessage = `${ message }`.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br>$2');
 
-		let html = '<h1>New livechat message</h1>';
-		if (host && host !== '') {
-			html = html.concat(`<p><strong>Sent from:</strong><a href='${ host }'> ${ host }</a></p>`);
-		}
+		let html = '<h1>New message from Booth / Meeting room visitor</h1>';
+//		if (host && host !== '') {
+//			html = html.concat(`<p><strong>Sent from:</strong><a href='${ host }'> ${ host }</a></p>`);
+//		}
 		html = html.concat(`
 			<p><strong>Visitor name:</strong> ${ name }</p>
 			<p><strong>Visitor email:</strong> ${ email }</p>
@@ -1088,7 +1088,7 @@ export const Livechat = {
 
 		const from = `${ name } - ${ email } <${ fromEmail }>`;
 		const replyTo = `${ name } <${ email }>`;
-		const subject = `Livechat offline message from ${ name }: ${ `${ emailMessage }`.substring(0, 20) }`;
+		const subject = `Sponsor offline message from ${ name }: ${ `${ emailMessage }`.substring(0, 20) }`;
 		this.sendEmail(from, emailTo, replyTo, subject, html);
 
 		Meteor.defer(() => {
