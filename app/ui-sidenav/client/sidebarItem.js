@@ -138,9 +138,9 @@ Template.sidebarItem.events({
 			return !(((roomData.cl != null) && !roomData.cl) || ['d', 'l'].includes(roomData.t));
 		};
 
-		const isLiveChat = () => {
+		const isActiveLiveChat = () => {
 			const roomData = Session.get(`roomData${ this.rid }`);
-			return roomData.t === 'l';
+			return roomData && roomData.t === 'l' && roomData.servedBy;
 		};
 
 		const canFavorite = settings.get('Favorite_Rooms') && ChatSubscription.find({ rid: this.rid }).count() > 0;
@@ -195,7 +195,7 @@ Template.sidebarItem.events({
 			});
 		}
 
-		if (isLiveChat()) {
+		if (isActiveLiveChat()) {
 			items.push({
 				icon: 'sign-out',
 				name: t('Close'),

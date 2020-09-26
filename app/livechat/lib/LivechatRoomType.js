@@ -94,7 +94,9 @@ export default class LivechatRoomType extends RoomTypeConfig {
 			case UiTextContext.HIDE_WARNING:
 				return 'Hide_Livechat_Warning';
 			case UiTextContext.LEAVE_WARNING:
-				return 'Hide_Livechat_Warning';
+				return 'Leave_Livechat_Warning';
+			case UiTextContext.CLOSE_WARNING:
+				return 'Leave_Livechat_Warning';
 			default:
 				return '';
 		}
