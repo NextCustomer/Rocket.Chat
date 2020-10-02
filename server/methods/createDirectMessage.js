@@ -32,6 +32,8 @@ Meteor.methods({
 			});
 		}
 
+		let isSponsor = false;
+
 		const users = usernames.filter((username) => username !== me.username).map((username) => {
 			let to = Users.findOneByUsernameIgnoringCase(username);
 
@@ -45,10 +47,12 @@ Meteor.methods({
 					method: 'createDirectMessage',
 				});
 			}
+
+			isSponsor = to.roles.includes('g_sponsor');
 			return to;
 		});
 
-		if (!hasPermission(Meteor.userId(), 'create-d')) {
+		if (!isSponsor && !hasPermission(Meteor.userId(), 'create-d')) {
 			// If the user can't create DMs but can access already existing ones
 			if (hasPermission(Meteor.userId(), 'view-d-room')) {
 				// Check if the direct room already exists, then return it
