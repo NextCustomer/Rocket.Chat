@@ -1088,7 +1088,7 @@ export const Livechat = {
 
 		const from = `${ name } - ${ email } <${ fromEmail }>`;
 		const replyTo = `${ name } <${ email }>`;
-		const subject = `Sponsor offline message from ${ name }: ${ `${ emailMessage }`.substring(0, 20) }`;
+		const subject = `Sponsor offline message from ${ name }`;
 		this.sendEmail(from, emailTo, replyTo, subject, html);
 
 		Meteor.defer(() => {
