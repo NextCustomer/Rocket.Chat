@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import { Match, check } from 'meteor/check';
+import { check, Match } from 'meteor/check';
 import { Random } from 'meteor/random';
 
 import { Messages } from '../../../../models';
@@ -51,6 +51,50 @@ API.v1.addRoute('livechat/video.call/:token', {
 			};
 
 			return API.v1.success({ videoCall });
+		} catch (e) {
+			return API.v1.failure(e);
+		}
+	},
+});
+
+API.v1.addRoute('livechat/video.call/:token/url', {
+	get() {
+		try {
+			check(this.urlParams, {
+				token: String,
+			});
+
+			check(this.queryParams, {
+				rid: String,
+			});
+
+			const { token } = this.urlParams;
+
+			const guest = findGuest(token);
+			if (!guest) {
+				throw new Meteor.Error('invalid-token');
+			}
+
+			const rid = this.queryParams.rid || Random.id();
+			let rname;
+			if (rcSettings.get('Jitsi_URL_Room_Hash')) {
+				rname = rcSettings.get('uniqueID') + rid;
+			}
+			const videoCall = {
+				rid,
+				domain: rcSettings.get('Jitsi_Domain'),
+				provider: 'jitsi',
+				room: rcSettings.get('Jitsi_URL_Room_Prefix') + rname + rcSettings.get('Jitsi_URL_Room_Suffix'),
+				timeout: new Date(Date.now() + 3600 * 1000),
+			};
+
+			return {
+				statusCode: 301,
+				headers: {
+					location: `https://${ videoCall.domain }/${ videoCall.room }`,
+				},
+				body: {},
+			};
 		} catch (e) {
 			return API.v1.failure(e);
 		}
