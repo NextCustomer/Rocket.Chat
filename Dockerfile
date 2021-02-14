@@ -1,4 +1,4 @@
-FROM node:12.18.4-buster-slim
+FROM node:12.18.4
 WORKDIR /core
 COPY ./ /core
 RUN curl https://install.meteor.com/ | sh
