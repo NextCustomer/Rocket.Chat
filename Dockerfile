@@ -1,4 +1,4 @@
-FROM node:12.18.4
+FROM ubuntu as build
 WORKDIR /core
 COPY ./ /core
 RUN curl https://install.meteor.com/ | sh
