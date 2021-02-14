@@ -6,7 +6,7 @@ import { ReactiveVar } from 'meteor/reactive-var';
 import { Tracker } from 'meteor/tracker';
 import localforage from 'localforage';
 import _ from 'underscore';
-import EventEmitter from 'wolfy87-eventemitter';
+import { Emitter } from '@rocket.chat/emitter';
 
 import { callbacks } from '../../../callbacks';
 import Notifications from '../../../notifications/client/lib/Notifications';
@@ -28,7 +28,7 @@ const wrap = (fn) => (...args) => new Promise((resolve, reject) => {
 
 const localforageGetItem = wrap(localforage.getItem);
 
-class CachedCollectionManagerClass extends EventEmitter {
+class CachedCollectionManagerClass extends Emitter {
 	constructor() {
 		super();
 		this.items = [];
@@ -118,7 +118,7 @@ const nullLog = function() {};
 
 const log = (...args) => console.log(`CachedCollection ${ this.name } =>`, ...args);
 
-export class CachedCollection extends EventEmitter {
+export class CachedCollection extends Emitter {
 	constructor({
 		collection = new Mongo.Collection(null),
 		name,
@@ -129,7 +129,7 @@ export class CachedCollection extends EventEmitter {
 		userRelated = true,
 		listenChangesForLoggedUsersOnly = false,
 		useSync = true,
-		version = 13,
+		version = 15,
 		maxCacheTime = 60 * 60 * 24 * 30,
 		onSyncData = (/* action, record */) => {},
 	}) {
@@ -200,6 +200,10 @@ export class CachedCollection extends EventEmitter {
 			}
 			const _updatedAt = new Date(record._updatedAt);
 			record._updatedAt = _updatedAt;
+
+			if (record.lastMessage && typeof record.lastMessage._updatedAt === 'string') {
+				record.lastMessage._updatedAt = new Date(record.lastMessage._updatedAt);
+			}
 
 			if (_updatedAt > this.updatedAt) {
 				this.updatedAt = _updatedAt;

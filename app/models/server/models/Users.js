@@ -6,6 +6,7 @@ import s from 'underscore.string';
 import { Base } from './_Base';
 import Subscriptions from './Subscriptions';
 import { settings } from '../../../settings/server/functions/settings';
+import { escapeRegExp } from '../../../../lib/escapeRegExp';
 
 const queryStatusAgentOnline = (extraFilters = {}) => {
 	if (settings.get('Livechat_enabled_when_agent_idle') === false) {
@@ -51,6 +52,7 @@ export class Users extends Base {
 		this.tryEnsureIndex({ isRemote: 1 }, { sparse: true });
 		this.tryEnsureIndex({ 'services.saml.inResponseTo': 1 });
 		this.tryEnsureIndex({ openBusinessHours: 1 }, { sparse: true });
+		this.tryEnsureIndex({ statusLivechat: 1 }, { sparse: true });
 	}
 
 	getLoginTokensByUserId(userId) {
@@ -172,8 +174,11 @@ export class Users extends Base {
 		return this.find(query);
 	}
 
-	getNextAgent() {
-		const query = queryStatusAgentOnline();
+	getNextAgent(ignoreAgentId) {
+		const extraFilters = {
+			...ignoreAgentId && { _id: { $ne: ignoreAgentId } },
+		};
+		const query = queryStatusAgentOnline(extraFilters);
 
 		const collectionObj = this.model.rawCollection();
 		const findAndModify = Meteor.wrapAsync(collectionObj.findAndModify, collectionObj);
@@ -199,11 +204,12 @@ export class Users extends Base {
 		return null;
 	}
 
-	getNextBotAgent() {
+	getNextBotAgent(ignoreAgentId) {
 		const query = {
 			roles: {
 				$all: ['bot', 'livechat-agent'],
 			},
+			...ignoreAgentId && { _id: { $ne: ignoreAgentId } },
 		};
 
 		const collectionObj = this.model.rawCollection();
@@ -549,7 +555,7 @@ export class Users extends Base {
 
 	findOneByUsernameIgnoringCase(username, options) {
 		if (typeof username === 'string') {
-			username = new RegExp(`^${ s.escapeRegExp(username) }$`, 'i');
+			username = new RegExp(`^${ escapeRegExp(username) }$`, 'i');
 		}
 
 		const query = { username };
@@ -559,7 +565,7 @@ export class Users extends Base {
 
 	findOneByUsernameAndRoomIgnoringCase(username, rid, options) {
 		if (typeof username === 'string') {
-			username = new RegExp(`^${ s.escapeRegExp(username) }$`, 'i');
+			username = new RegExp(`^${ escapeRegExp(username) }$`, 'i');
 		}
 
 		const query = {
@@ -572,7 +578,7 @@ export class Users extends Base {
 
 	findOneByUsernameAndServiceNameIgnoringCase(username, userId, serviceName, options) {
 		if (typeof username === 'string') {
-			username = new RegExp(`^${ s.escapeRegExp(username) }$`, 'i');
+			username = new RegExp(`^${ escapeRegExp(username) }$`, 'i');
 		}
 
 		const query = { username, [`services.${ serviceName }.id`]: userId };
@@ -607,7 +613,7 @@ export class Users extends Base {
 		return this.findOne(query, options);
 	}
 
-	findOneById(userId, options) {
+	findOneById(userId, options = {}) {
 		const query = { _id: userId };
 
 		return this.findOne(query, options);
@@ -744,7 +750,7 @@ export class Users extends Base {
 			return this._db.find(query, options);
 		}
 
-		const termRegex = new RegExp((startsWith ? '^' : '') + s.escapeRegExp(searchTerm) + (endsWith ? '$' : ''), 'i');
+		const termRegex = new RegExp((startsWith ? '^' : '') + escapeRegExp(searchTerm) + (endsWith ? '$' : ''), 'i');
 
 		const searchFields = forcedSearchFields || settings.get('Accounts_SearchFields').trim().split(',');
 
@@ -834,13 +840,11 @@ export class Users extends Base {
 		return this.find(query, options);
 	}
 
-	getLastLogin(options) {
-		if (options == null) { options = {}; }
-		const query = { lastLogin: { $exists: 1 } };
+	getLastLogin(options = { fields: { _id: 0, lastLogin: 1 } }) {
 		options.sort = { lastLogin: -1 };
 		options.limit = 1;
-		const [user] = this.find(query, options).fetch();
-		return user && user.lastLogin;
+		const [user] = this.find({}, options).fetch();
+		return user?.lastLogin;
 	}
 
 	findUsersByUsernames(usernames, options) {

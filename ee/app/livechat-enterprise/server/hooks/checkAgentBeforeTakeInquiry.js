@@ -3,8 +3,9 @@ import { Meteor } from 'meteor/meteor';
 import { callbacks } from '../../../../../app/callbacks';
 import { Users } from '../../../../../app/models/server/raw';
 import { settings } from '../../../../../app/settings';
-import { allowAgentSkipQueue, getMaxNumberSimultaneousChat } from '../lib/Helper';
+import { getMaxNumberSimultaneousChat } from '../lib/Helper';
 import { RoutingManager } from '../../../../../app/livechat/server/lib/RoutingManager';
+import { allowAgentSkipQueue } from '../../../../../app/livechat/server/lib/Helper';
 
 callbacks.add('livechat.checkAgentBeforeTakeInquiry', async (agent, inquiry) => {
 	if (!settings.get('Livechat_waiting_queue')) {
@@ -34,7 +35,7 @@ callbacks.add('livechat.checkAgentBeforeTakeInquiry', async (agent, inquiry) => 
 
 	const { queueInfo: { chats = 0 } = {} } = user;
 	if (maxNumberSimultaneousChat <= chats) {
-		callbacks.run('livechat.onMaxNumberSimultaneousChatsReached', inquiry, agent);
+		callbacks.run('livechat.onMaxNumberSimultaneousChatsReached', inquiry);
 
 		if (!RoutingManager.getConfig().autoAssignAgent) {
 			throw new Meteor.Error('error-max-number-simultaneous-chats-reached', 'Not allowed');

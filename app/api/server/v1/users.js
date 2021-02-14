@@ -22,6 +22,8 @@ import { setStatusText } from '../../../lib/server';
 import { findUsersToAutocomplete } from '../lib/users';
 import { getUserForCheck, emailCheck } from '../../../2fa/server/code';
 import { resetUserE2EEncriptionKey } from '../../../../server/lib/resetUserE2EKey';
+import { setUserStatus } from '../../../../imports/users-presence/server/activeUsers';
+import { resetTOTP } from '../../../2fa/server/functions/resetTOTP';
 
 API.v1.addRoute('users.create', { authRequired: true }, {
 	post() {
@@ -417,12 +419,14 @@ API.v1.addRoute('users.setStatus', { authRequired: true }, {
 			if (this.bodyParams.status) {
 				const validStatus = ['online', 'away', 'offline', 'busy'];
 				if (validStatus.includes(this.bodyParams.status)) {
+					const { status } = this.bodyParams;
 					Meteor.users.update(user._id, {
 						$set: {
-							status: this.bodyParams.status,
-							statusDefault: this.bodyParams.status,
+							status,
+							statusDefault: status,
 						},
 					});
+					setUserStatus(user, status);
 				} else {
 					throw new Meteor.Error('error-invalid-status', 'Valid status types include online, away, offline, and busy.', {
 						method: 'users.setStatus',
@@ -610,11 +614,8 @@ API.v1.addRoute('users.forgotPassword', { authRequired: false }, {
 			return API.v1.failure('The \'email\' param is required');
 		}
 
-		const emailSent = Meteor.call('sendForgotPasswordEmail', email);
-		if (emailSent) {
-			return API.v1.success();
-		}
-		return API.v1.failure('User not found');
+		Meteor.call('sendForgotPasswordEmail', email);
+		return API.v1.success();
 	},
 });
 
@@ -729,7 +730,9 @@ API.v1.addRoute('users.2fa.sendEmailCode', {
 			throw new Meteor.Error('error-invalid-user', 'Invalid user');
 		}
 
-		return API.v1.success(emailCheck.sendEmailCode(getUserForCheck(userId)));
+		emailCheck.sendEmailCode(getUserForCheck(userId));
+
+		return API.v1.success();
 	},
 });
 
@@ -786,6 +789,18 @@ API.v1.addRoute('users.requestDataDownload', { authRequired: true }, {
 	},
 });
 
+API.v1.addRoute('users.logoutOtherClients', { authRequired: true }, {
+	post() {
+		try {
+			const result = Meteor.call('logoutOtherClients');
+
+			return API.v1.success(result);
+		} catch (error) {
+			return API.v1.failure(error);
+		}
+	},
+});
+
 API.v1.addRoute('users.autocomplete', { authRequired: true }, {
 	get() {
 		const { selector } = this.queryParams;
@@ -807,7 +822,7 @@ API.v1.addRoute('users.removeOtherTokens', { authRequired: true }, {
 	},
 });
 
-API.v1.addRoute('users.resetE2EKey', { authRequired: true, twoFactorRequired: true }, {
+API.v1.addRoute('users.resetE2EKey', { authRequired: true, twoFactorRequired: true, twoFactorOptions: { disableRememberMe: true } }, {
 	post() {
 		// reset own keys
 		if (this.isUserFromParams()) {
@@ -832,6 +847,34 @@ API.v1.addRoute('users.resetE2EKey', { authRequired: true, twoFactorRequired: tr
 		if (!resetUserE2EEncriptionKey(user._id, true)) {
 			return API.v1.failure();
 		}
+
+		return API.v1.success();
+	},
+});
+
+API.v1.addRoute('users.resetTOTP', { authRequired: true, twoFactorRequired: true, twoFactorOptions: { disableRememberMe: true } }, {
+	post() {
+		// reset own keys
+		if (this.isUserFromParams()) {
+			Promise.await(resetTOTP(this.userId, false));
+			return API.v1.success();
+		}
+
+		// reset other user keys
+		const user = this.getUserFromParams();
+		if (!user) {
+			throw new Meteor.Error('error-invalid-user-id', 'Invalid user id');
+		}
+
+		if (!settings.get('Accounts_TwoFactorAuthentication_Enforce_Password_Fallback')) {
+			throw new Meteor.Error('error-not-allowed', 'Not allowed');
+		}
+
+		if (!hasPermission(Meteor.userId(), 'edit-other-user-totp')) {
+			throw new Meteor.Error('error-not-allowed', 'Not allowed');
+		}
+
+		Promise.await(resetTOTP(user._id, true));
 
 		return API.v1.success();
 	},
