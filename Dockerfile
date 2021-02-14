@@ -1,11 +1,11 @@
-FROM node:12.16.1 as build
+FROM node:12.18.4-buster-slim
 WORKDIR /core
 COPY ./ /core
 RUN curl https://install.meteor.com/ | sh
 RUN meteor npm install
 RUN meteor build --server-only --directory dist/ --allow-superuser
 
-FROM node:12.16.1-buster-slim
+FROM node:12.18.4-buster-slim
 # dependencies
 RUN groupadd -g 65533 -r rocketchat \
     && useradd -u 65533 -r -g rocketchat rocketchat \
