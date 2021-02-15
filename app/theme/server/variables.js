@@ -1,5 +1,6 @@
 import { theme } from './server';
 import { settings } from '../../settings';
+import { Settings } from '/app/models';
 // TODO: Define registers/getters/setters for packages to work with established
 // 			heirarchy of colors instead of making duplicate definitions
 // TODO: Settings pages to show simple separation of major/minor/addon colors
@@ -56,3 +57,109 @@ settings.add('theme-custom-css', '', {
 	section: 'Custom CSS',
 	public: true,
 });
+
+settings.addGroup('Event Management');
+
+settings.add('event.events', '[{"name":"Grove", "slug": "grove"}]', {
+	group: 'Event Management',
+	type: 'code',
+	code: 'application/json',
+	multiline: true,
+	public: false,
+});
+
+const events = Settings.findOneById('event.events');
+for (const event of JSON.parse((events || {}).value || '')) {
+	settings.add(`event-${ event.slug }.theme-css`, '', {
+		group: 'Event Management',
+		type: 'code',
+		code: 'text/css',
+		multiline: true,
+		section: `${ event.name }`,
+		public: false,
+	});
+
+	settings.add(`event-${ event.slug }.Jitsi_Enabled`, '', {
+		group: 'Event Management',
+		type: 'boolean',
+		i18nLabel: 'Jitsi Enabled',
+		section: `${ event.name }`,
+		public: false,
+	});
+
+	settings.add(`event-${ event.slug }.Jitsi_Domain`, '', {
+		group: 'Event Management',
+		type: 'string',
+		i18nLabel: 'Jitsi Domain',
+		section: `${ event.name }`,
+		public: false,
+	});
+
+	settings.add(`event-${ event.slug }.Layout_Home_Body`, '', {
+		group: 'Event Management',
+		type: 'code',
+		code: 'text/html',
+		multiline: true,
+		public: false,
+		i18nLabel: 'Layout_Home_Body',
+		section: `${ event.name }`,
+	});
+
+	settings.add(`event-${ event.slug }.Layout_Terms_of_Service`, '', {
+		group: 'Event Management',
+		type: 'code',
+		code: 'text/html',
+		multiline: true,
+		public: false,
+		i18nLabel: 'Layout_Terms_of_Service',
+		section: `${ event.name }`,
+	});
+
+	settings.add(`event-${ event.slug }.Layout_Sidenav_Footer`, '', {
+		group: 'Event Management',
+		type: 'code',
+		code: 'text/html',
+		public: false,
+		i18nLabel: 'Layout_Sidenav_Footer',
+		section: `${ event.name }`,
+	});
+
+	settings.add(`event-${ event.slug }.Layout_Privacy_Policy`, '', {
+		group: 'Event Management',
+		type: 'code',
+		code: 'text/html',
+		public: false,
+		i18nLabel: 'Layout_Privacy_Policy',
+		section: `${ event.name }`,
+	});
+
+	settings.add(`event-${ event.slug }.Layout_Login_Terms`, '', {
+		group: 'Event Management',
+		type: 'code',
+		code: 'text/html',
+		public: false,
+		i18nLabel: 'Layout_Login_Terms',
+		section: `${ event.name }`,
+	});
+
+	settings.add(`event-${ event.slug }.Assets_logo`, '', {
+		group: 'Event Management',
+		type: 'code',
+		code: 'text/html',
+		multiline: true,
+		public: false,
+		i18nLabel: 'Assets_logo',
+		section: `${ event.name }`,
+	});
+
+	// Private
+	settings.add(`event-${ event.slug }.css`, '', {
+		group: 'Event Management',
+		type: 'code',
+		code: 'text/css',
+		multiline: true,
+		public: false,
+		hidden: true,
+		section: `${ event.name }`,
+	});
+}

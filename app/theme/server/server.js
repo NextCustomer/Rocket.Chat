@@ -20,13 +20,13 @@ const logger = new Logger('rocketchat:theme', {
 });
 
 let currentHash = '';
-let currentSize = 0;
 
 export const theme = new class {
 	constructor() {
 		this.variables = {};
 		this.packageCallbacks = [];
 		this.customCSS = '';
+		this.customCSSEvent = {};
 		settings.add('css', '');
 		settings.addGroup('Layout');
 		settings.onload('css', Meteor.bindEnvironment((key, value, initialLoad) => {
@@ -41,9 +41,11 @@ export const theme = new class {
 		this.compileDelayed = _.debounce(Meteor.bindEnvironment(this.compile.bind(this)), 100);
 		Meteor.startup(() => {
 			settings.onAfterInitialLoad(() => {
-				settings.get(/^theme-./, Meteor.bindEnvironment((key, value) => {
+				settings.get(/.+theme-./, Meteor.bindEnvironment((key, value) => {
 					if (key === 'theme-custom-css' && value != null) {
 						this.customCSS = value;
+					} else if (key.match(/event-.+\.theme-css/) && value != null) {
+						this.customCSSEvent[key] = value;
 					} else {
 						const name = key.replace(/^theme-[a-z]+-/, '');
 						if (this.variables[name] != null) {
@@ -58,32 +60,35 @@ export const theme = new class {
 	}
 
 	compile() {
-		let content = [];
+		const promises = [];
+		for (const event of Object.keys(this.customCSSEvent)) {
+			let content = [];
+			content.push(...this.packageCallbacks.map((name) => name()));
+			content.push(this.customCSSEvent[event]);
+			const slug = event.match(/event-(.+)\.theme-css/)[1];
 
-		content.push(...this.packageCallbacks.map((name) => name()));
+			content = content.join('\n');
+			const options = {
+				compress: true,
+				plugins: [new Autoprefixer()],
+			};
 
-		content.push(this.customCSS);
-		content = content.join('\n');
-		const options = {
-			compress: true,
-			plugins: [new Autoprefixer()],
-		};
-		const start = Date.now();
-		return less.render(content, options, function(err, data) {
-			logger.stop_rendering(Date.now() - start);
-			if (err != null) {
-				return console.log(err);
-			}
-			settings.updateById('css', data.css);
+			promises.push(less.render(content, options, function(err, data) {
+				if (err != null) {
+					return console.log(err);
+				}
 
-			return Meteor.startup(function() {
-				return Meteor.setTimeout(function() {
-					return process.emit('message', {
-						refresh: 'client',
-					});
-				}, 200);
-			});
-		});
+				settings.updateById(`event-${ slug }.css`, data.css);
+			}));
+		}
+
+		Promise.all(promises).then(() => Meteor.startup(function() {
+			return Meteor.setTimeout(function() {
+				return process.emit('message', {
+					refresh: 'client',
+				});
+			}, 200);
+		}));
 	}
 
 	addColor(name, value, section, properties) {
@@ -131,29 +136,31 @@ export const theme = new class {
 		return this.compileDelayed();
 	}
 
-	getCss() {
-		return settings.get('css') || '';
+	getCss(slug) {
+		return settings.get(`event-${ slug }.css`) || '';
 	}
 }();
 
 Meteor.startup(() => {
 	settings.get('css', (key, value = '') => {
 		currentHash = crypto.createHash('sha1').update(value).digest('hex');
-		currentSize = value.length;
 		injectIntoHead('css-theme', `<link rel="stylesheet" type="text/css" href="${ getURL(`/theme.css?${ currentHash }`) }">`);
 	});
 });
 
 WebApp.rawConnectHandlers.use(function(req, res, next) {
 	const path = req.url.split('?')[0];
+	const slug = req.headers['x-forwarded-host'].split('.')[0];
 	const prefix = __meteor_runtime_config__.ROOT_URL_PATH_PREFIX || '';
 	if (path !== `${ prefix }/theme.css`) {
 		return next();
 	}
 
+	const css = theme.getCss(slug);
+
 	res.setHeader('Content-Type', 'text/css; charset=UTF-8');
-	res.setHeader('Content-Length', currentSize);
+	res.setHeader('Content-Length', css.length);
 	res.setHeader('ETag', `"${ currentHash }"`);
-	res.write(theme.getCss());
+	res.write(css);
 	res.end();
 });

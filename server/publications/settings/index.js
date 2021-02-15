@@ -1,15 +1,36 @@
 import { Meteor } from 'meteor/meteor';
 
 import { Settings } from '../../../app/models/server';
-import { hasPermission, hasAtLeastOnePermission } from '../../../app/authorization/server';
+import { hasAtLeastOnePermission, hasPermission } from '../../../app/authorization/server';
 import { getSettingPermissionId } from '../../../app/authorization/lib';
 import { SettingsEvents } from '../../../app/settings/server/functions/settings';
+
+const currentEventSlug = function() {
+	const currentInvocation = DDP._CurrentMethodInvocation.get() || DDP._CurrentPublicationInvocation.get();
+	return currentInvocation ? currentInvocation.connection.httpHeaders.host.split('.')[0] : undefined;
+};
+
+const eventAwareSettings = (settings) => {
+	const slug = currentEventSlug();
+	for (const setting of settings) {
+		if (['Jitsi_Enabled', 'Layout_Home_Body', 'Layout_Terms_of_Service',
+			'Layout_Sidenav_Footer', 'Assets_logo', 'Layout_Login_Terms',
+			'Layout_Privacy_Policy', 'Layout_Login_Terms'].includes(setting._id)) {
+			const current = Settings.findOneById(`event-${ slug }.${ setting._id }`);
+			setting.value = current ? current.value : setting.value;
+		}
+	}
+
+	return settings;
+};
 
 Meteor.methods({
 	'public-settings/get'(updatedAt) {
 		if (updatedAt instanceof Date) {
-			const records = Settings.findNotHiddenPublicUpdatedAfter(updatedAt).fetch();
+			let records = Settings.findNotHiddenPublicUpdatedAfter(updatedAt).fetch();
 			SettingsEvents.emit('fetch-settings', records);
+
+			records = eventAwareSettings(records);
 
 			return {
 				update: records,
@@ -27,7 +48,8 @@ Meteor.methods({
 			};
 		}
 
-		const publicSettings = Settings.findNotHiddenPublic().fetch();
+		let publicSettings = Settings.findNotHiddenPublic().fetch();
+		publicSettings = eventAwareSettings(publicSettings);
 		SettingsEvents.emit('fetch-settings', publicSettings);
 
 		return publicSettings;
@@ -76,3 +98,5 @@ Meteor.methods({
 		};
 	},
 });
+
+
