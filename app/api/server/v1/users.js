@@ -1,26 +1,26 @@
 import { Meteor } from 'meteor/meteor';
-import { Match, check } from 'meteor/check';
+import { check, Match } from 'meteor/check';
 import { TAPi18n } from 'meteor/rocketchat:tap-i18n';
 import _ from 'underscore';
 import Busboy from 'busboy';
 
-import { Users, Subscriptions } from '../../../models/server';
+import { Subscriptions, Users } from '../../../models/server';
 import { hasPermission } from '../../../authorization';
 import { settings } from '../../../settings';
 import { getURL } from '../../../utils';
 import {
-	validateCustomFields,
-	saveUser,
-	saveCustomFieldsWithoutValidation,
 	checkUsernameAvailability,
-	setUserAvatar,
 	saveCustomFields,
+	saveCustomFieldsWithoutValidation,
+	saveUser,
+	setUserAvatar,
+	validateCustomFields,
 } from '../../../lib';
 import { getFullUserDataByIdOrUsername } from '../../../lib/server/functions/getFullUserData';
 import { API } from '../api';
 import { setStatusText } from '../../../lib/server';
 import { findUsersToAutocomplete } from '../lib/users';
-import { getUserForCheck, emailCheck } from '../../../2fa/server/code';
+import { emailCheck, getUserForCheck } from '../../../2fa/server/code';
 import { resetUserE2EEncriptionKey } from '../../../../server/lib/resetUserE2EKey';
 import { setUserStatus } from '../../../../imports/users-presence/server/activeUsers';
 import { resetTOTP } from '../../../2fa/server/functions/resetTOTP';
@@ -648,6 +648,26 @@ API.v1.addRoute('users.generatePersonalAccessToken', { authRequired: true, twoFa
 		}
 		const token = Meteor.runAsUser(this.userId, () => Meteor.call('personalAccessTokens:generateToken', { tokenName, bypassTwoFactor }));
 
+		return API.v1.success({ token });
+	},
+});
+
+API.v1.addRoute('users.generatePersonalAccessTokenAdmin', { authRequired: true, twoFactorRequired: true }, {
+	post() {
+		const { userId, tokenName, bypassTwoFactor } = this.bodyParams;
+		if (!userId) {
+			return API.v1.failure('The \'userId\' param is required');
+		}
+
+		if (!tokenName) {
+			return API.v1.failure('The \'tokenName\' param is required');
+		}
+
+		if (!hasPermission(Meteor.userId(), 'create-user')) {
+			throw new Meteor.Error('not-authorized', 'Not Authorized', { method: 'users.generatePersonalAccessTokenAdmin' });
+		}
+
+		const token = Meteor.runAsUser(userId, () => Meteor.call('personalAccessTokens:generateToken', { tokenName, bypassTwoFactor }));
 		return API.v1.success({ token });
 	},
 });
