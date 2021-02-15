@@ -25,6 +25,7 @@ pipeline {
           git branch: 'develop', credentialsId: 'Jenkins-core', url: 'git@github.com:NextCustomer/Rocket.Chat.git'
           container(name: 'kaniko') {
               sh '''
+              rm -R dist/
               /kaniko/executor --dockerfile "`pwd`"/Dockerfile --context "`pwd`" --destination=835518865080.dkr.ecr.us-east-1.amazonaws.com/next-ems/rocket-chat:${IMAGE_VERSION}
               '''
           }
