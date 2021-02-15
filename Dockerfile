@@ -4,6 +4,7 @@ COPY ./ /core
 RUN curl https://install.meteor.com/ | sh
 RUN meteor npm install
 RUN meteor build --server-only --directory dist/ --allow-superuser
+RUN cat dist/bundle/programs/server/app/app.js | grep "theme-custom-css" -A10
 
 FROM node:12.18.4-buster-slim
 # dependencies
@@ -17,6 +18,7 @@ RUN groupadd -g 65533 -r rocketchat \
 COPY --from=build /core/dist/ /app
 
 RUN ls /app
+RUN cat /app/bundle/programs/server/app/app.js | grep "theme-custom-css" -A10
 
 RUN aptMark="$(apt-mark showmanual)" \
     && apt-get install -y --no-install-recommends g++ make python ca-certificates \
