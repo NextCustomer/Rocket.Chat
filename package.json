@@ -281,11 +281,6 @@
 			"server": "server/main.js"
 		}
 	},
-	"husky": {
-		"hooks": {
-			"pre-push": "meteor npm run lint && meteor npm run testunit -- --exclude app/models/server/models/Sessions.tests.js"
-		}
-	},
 	"houston": {
 		"minTag": "0.55.0-rc.0",
 		"updateFiles": [
