@@ -152,6 +152,14 @@ for (const event of JSON.parse((events || {}).value || '')) {
 		section: `${ event.name }`,
 	});
 
+	settings.add(`event-${ event.slug }.Site_Name`, '', {
+		group: 'Event Management',
+		type: 'string',
+		public: false,
+		i18nLabel: 'Site_Name',
+		section: `${ event.name }`,
+	});
+
 	// Private
 	settings.add(`event-${ event.slug }.css`, '', {
 		group: 'Event Management',
