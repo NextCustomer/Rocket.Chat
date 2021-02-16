@@ -49,7 +49,7 @@ addAction('video', ({ room }) => {
 
 	const groups = useStableArray([
 		'direct',
-		'group',
+		// 'group',
 		'live',
 		enabledChannel && 'channel',
 	].filter(Boolean) as ToolboxActionConfig['groups']);
