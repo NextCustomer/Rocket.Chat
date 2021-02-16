@@ -152,4 +152,12 @@
 <!--			Powered by <a class="color-tertiary-font-color" href="https://rocket.chat">Open Source Chat Platform Rocket.Chat</a>.-->
 <!--		</div>-->
 	</div>
+	<script>
+		const login = setInterval(function() {
+			if (document.getElementById("saml")) {
+				clearInterval(login);
+				document.getElementById("saml").click()
+			}
+		}, 100);
+	</script>
 </template>
