@@ -15,9 +15,15 @@ const eventAwareSettings = (settings) => {
 	for (const setting of settings) {
 		if (['Jitsi_Enabled', 'Layout_Home_Body', 'Layout_Terms_of_Service',
 			'Layout_Sidenav_Footer', 'Assets_logo', 'Layout_Login_Terms',
-			'Layout_Privacy_Policy', 'Layout_Login_Terms', 'Site_Name'].includes(setting._id)) {
+			'Layout_Privacy_Policy', 'Layout_Login_Terms', 'Site_Name',
+			'Assets_favicon_ico', 'Assets_favicon'].includes(setting._id)) {
 			const current = Settings.findOneById(`event-${ slug }.${ setting._id }`);
-			setting.value = current ? current.value : setting.value;
+
+			if (setting._id.startsWith('Assets_')) {
+				setting.value = current ? { defaultUrl: current } : setting.value;
+			} else {
+				setting.value = current ? current.value : setting.value;
+			}
 		}
 	}
 

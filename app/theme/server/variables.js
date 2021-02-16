@@ -79,20 +79,12 @@ for (const event of JSON.parse((events || {}).value || '')) {
 		public: false,
 	});
 
-	settings.add(`event-${ event.slug }.Jitsi_Enabled`, '', {
-		group: 'Event Management',
-		type: 'boolean',
-		i18nLabel: 'Jitsi Enabled',
-		section: `${ event.name }`,
-		public: false,
-	});
-
-	settings.add(`event-${ event.slug }.Jitsi_Domain`, '', {
+	settings.add(`event-${ event.slug }.Site_Name`, '', {
 		group: 'Event Management',
 		type: 'string',
-		i18nLabel: 'Jitsi Domain',
-		section: `${ event.name }`,
 		public: false,
+		i18nLabel: 'Site_Name',
+		section: `${ event.name }`,
 	});
 
 	settings.add(`event-${ event.slug }.Layout_Home_Body`, '', {
@@ -144,20 +136,66 @@ for (const event of JSON.parse((events || {}).value || '')) {
 
 	settings.add(`event-${ event.slug }.Assets_logo`, '', {
 		group: 'Event Management',
-		type: 'code',
-		code: 'text/html',
-		multiline: true,
+		type: 'string',
 		public: false,
 		i18nLabel: 'Assets_logo',
 		section: `${ event.name }`,
 	});
 
-	settings.add(`event-${ event.slug }.Site_Name`, '', {
+	settings.add(`event-${ event.slug }.Assets_logo`, '', {
 		group: 'Event Management',
 		type: 'string',
 		public: false,
-		i18nLabel: 'Site_Name',
+		i18nLabel: 'Assets_logo',
 		section: `${ event.name }`,
+	});
+
+	settings.add(`event-${ event.slug }.Assets_logo`, '', {
+		group: 'Event Management',
+		type: 'string',
+		public: false,
+		i18nLabel: 'Assets_logo',
+		section: `${ event.name }`,
+	});
+
+	settings.add(`event-${ event.slug }.Assets_logo`, '', {
+		group: 'Event Management',
+		type: 'string',
+		public: false,
+		i18nLabel: 'Assets_logo',
+		section: `${ event.name }`,
+	});
+
+	settings.add(`event-${ event.slug }.Assets_favicon_ico`, '', {
+		group: 'Event Management',
+		type: 'string',
+		public: false,
+		i18nLabel: 'Assets_favicon_ico',
+		section: `${ event.name }`,
+	});
+
+	settings.add(`event-${ event.slug }.Assets_favicon`, '', {
+		group: 'Event Management',
+		type: 'string',
+		public: false,
+		i18nLabel: 'Assets_favicon_svg',
+		section: `${ event.name }`,
+	});
+
+	settings.add(`event-${ event.slug }.Jitsi_Enabled`, '', {
+		group: 'Event Management',
+		type: 'boolean',
+		i18nLabel: 'Jitsi Enabled',
+		section: `${ event.name }`,
+		public: false,
+	});
+
+	settings.add(`event-${ event.slug }.Jitsi_Domain`, '', {
+		group: 'Event Management',
+		type: 'string',
+		i18nLabel: 'Jitsi Domain',
+		section: `${ event.name }`,
+		public: false,
 	});
 
 	// Private
