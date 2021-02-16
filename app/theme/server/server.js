@@ -150,12 +150,12 @@ Meteor.startup(() => {
 
 WebApp.rawConnectHandlers.use(function(req, res, next) {
 	const path = req.url.split('?')[0];
-	const slug = req.headers['x-forwarded-host'].split('.')[0];
 	const prefix = __meteor_runtime_config__.ROOT_URL_PATH_PREFIX || '';
 	if (path !== `${ prefix }/theme.css`) {
 		return next();
 	}
 
+	const slug = req.headers.host?.split('.')[0];
 	const css = theme.getCss(slug);
 
 	res.setHeader('Content-Type', 'text/css; charset=UTF-8');
