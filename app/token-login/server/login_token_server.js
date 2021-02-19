@@ -18,3 +18,19 @@ Accounts.registerLoginHandler('login-token', function(result) {
 		};
 	}
 });
+
+Accounts.registerLoginHandler('event-token', function(result) {
+	if (!result.eventToken) {
+		return;
+	}
+
+	const user = Meteor.users.findOne({
+		'services.eventToken.token': result.eventToken,
+	});
+
+	if (user) {
+		return {
+			userId: user._id,
+		};
+	}
+});

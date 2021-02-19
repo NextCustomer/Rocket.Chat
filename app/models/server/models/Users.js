@@ -53,6 +53,7 @@ export class Users extends Base {
 		this.tryEnsureIndex({ 'services.saml.inResponseTo': 1 });
 		this.tryEnsureIndex({ openBusinessHours: 1 }, { sparse: true });
 		this.tryEnsureIndex({ statusLivechat: 1 }, { sparse: true });
+		this.tryEnsureIndex({ 'services.eventToken.token': 1 });
 	}
 
 	getLoginTokensByUserId(userId) {
@@ -65,6 +66,14 @@ export class Users extends Base {
 		};
 
 		return this.find(query, { fields: { 'services.resume.loginTokens': 1 } });
+	}
+
+	addPersonalEventTokenUser({ userId, token }) {
+		return this.update(userId, {
+			$set: {
+				'services.eventToken.token': token,
+			},
+		});
 	}
 
 	addPersonalAccessTokenToUser({ userId, loginTokenObject }) {

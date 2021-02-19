@@ -24,6 +24,7 @@ import { emailCheck, getUserForCheck } from '../../../2fa/server/code';
 import { resetUserE2EEncriptionKey } from '../../../../server/lib/resetUserE2EKey';
 import { setUserStatus } from '../../../../imports/users-presence/server/activeUsers';
 import { resetTOTP } from '../../../2fa/server/functions/resetTOTP';
+import { Random } from 'meteor/random';
 
 API.v1.addRoute('users.create', { authRequired: true }, {
 	post() {
@@ -668,6 +669,28 @@ API.v1.addRoute('users.generatePersonalAccessTokenAdmin', { authRequired: true, 
 		}
 
 		const token = Meteor.runAsUser(userId, () => Meteor.call('personalAccessTokens:generateToken', { tokenName, bypassTwoFactor }));
+		return API.v1.success({ token });
+	},
+});
+
+API.v1.addRoute('users.generateEventToken', { authRequired: true, twoFactorRequired: true }, {
+	post() {
+		const { userId } = this.bodyParams;
+		if (!userId) {
+			return API.v1.failure('The \'userId\' param is required');
+		}
+
+		if (!hasPermission(Meteor.userId(), 'create-user')) {
+			throw new Meteor.Error('not-authorized', 'Not Authorized', { method: 'users.generateEventToken' });
+		}
+
+		const token = Random.secret();
+
+		Users.addPersonalEventTokenUser({
+			userId,
+			token,
+		});
+
 		return API.v1.success({ token });
 	},
 });
