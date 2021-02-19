@@ -4,15 +4,15 @@ import { usePermission } from '../../../../contexts/AuthorizationContext';
 
 import { addAction } from '.';
 
-
-addAction('rocket-search', {
-	groups: ['channel', 'group', 'direct', 'direct_multiple', 'live'],
-	id: 'rocket-search',
-	title: 'Search_Messages',
-	icon: 'magnifier',
-	template: 'RocketSearch',
-	order: 4,
-});
+//
+// addAction('rocket-search', {
+// 	groups: ['channel', 'group', 'direct', 'direct_multiple', 'live'],
+// 	id: 'rocket-search',
+// 	title: 'Search_Messages',
+// 	icon: 'magnifier',
+// 	template: 'RocketSearch',
+// 	order: 4,
+// });
 
 addAction('user-info', {
 	groups: ['direct'],
@@ -44,14 +44,14 @@ addAction('members-list', ({ room }) => {
 	} : null), [hasPermission, room.broadcast]);
 });
 
-addAction('uploaded-files-list', {
-	groups: ['channel', 'group', 'direct', 'direct_multiple', 'live'],
-	id: 'uploaded-files-list',
-	title: 'Files',
-	icon: 'clip',
-	template: lazy(() => import('../../contextualBar/RoomFiles')),
-	order: 6,
-});
+// addAction('uploaded-files-list', {
+// 	groups: ['channel', 'group', 'direct', 'direct_multiple', 'live'],
+// 	id: 'uploaded-files-list',
+// 	title: 'Files',
+// 	icon: 'clip',
+// 	template: lazy(() => import('../../contextualBar/RoomFiles')),
+// 	order: 6,
+// });
 
 addAction('keyboard-shortcut-list', {
 	groups: ['channel', 'group', 'direct', 'direct_multiple'],

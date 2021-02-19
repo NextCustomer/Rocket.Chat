@@ -5,7 +5,12 @@ import { useMutableCallback } from '@rocket.chat/fuselage-hooks';
 import { useToastMessageDispatch } from '../../contexts/ToastMessagesContext';
 import { useTranslation } from '../../contexts/TranslationContext';
 import { useMethod } from '../../contexts/ServerContext';
-import { useOmnichannelShowQueueLink, useOmnichannelAgentAvailable, useOmnichannelQueueLink, useOmnichannelDirectoryLink } from '../../contexts/OmnichannelContext';
+import {
+	useOmnichannelAgentAvailable,
+	useOmnichannelDirectoryLink,
+	useOmnichannelQueueLink,
+	useOmnichannelShowQueueLink,
+} from '../../contexts/OmnichannelContext';
 
 const OmnichannelSection = React.memo((props) => {
 	const changeAgentStatus = useMethod('livechat:changeLivechatStatus');
@@ -13,7 +18,7 @@ const OmnichannelSection = React.memo((props) => {
 	const agentAvailable = useOmnichannelAgentAvailable();
 	const showOmnichannelQueueLink = useOmnichannelShowQueueLink();
 	const queueLink = useOmnichannelQueueLink();
-	const directoryLink = useOmnichannelDirectoryLink();
+	// const directoryLink = useOmnichannelDirectoryLink();
 	const dispatchToastMessage = useToastMessageDispatch();
 
 	const icon = {
@@ -22,10 +27,10 @@ const OmnichannelSection = React.memo((props) => {
 		...agentAvailable && { success: 1 },
 	};
 
-	const directoryIcon = {
-		title: t('Contact_Center'),
-		icon: 'contact',
-	};
+	// const directoryIcon = {
+	// 	title: t('Contact_Center'),
+	// 	icon: 'contact',
+	// };
 	const handleStatusChange = useMutableCallback(async () => {
 		try {
 			await changeAgentStatus();
@@ -40,7 +45,7 @@ const OmnichannelSection = React.memo((props) => {
 		<Sidebar.TopBar.Actions>
 			{showOmnichannelQueueLink && <Sidebar.TopBar.Action icon='queue' title={t('Queue')} is='a' href={queueLink}/> }
 			<Sidebar.TopBar.Action {...icon} onClick={handleStatusChange}/>
-			<Sidebar.TopBar.Action {...directoryIcon} href={directoryLink} is='a' />
+			{/* <Sidebar.TopBar.Action {...directoryIcon} href={directoryLink} is='a' /> */ }
 		</Sidebar.TopBar.Actions>
 	</Sidebar.TopBar.ToolBox>;
 });

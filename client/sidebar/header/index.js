@@ -21,12 +21,12 @@ const HeaderWithData = () => {
 			<UserAvatarButton user={user}/>
 			<Sidebar.TopBar.Actions>
 				<Home title={t('Home')} />
-				<Search title={t('Search')} data-qa='sidebar-search' />
-				{user && <>
-					<Directory title={t('Directory')} />
-					<Sort title={t('Filters')} />
-					<CreateRoom title={t('Create_A_New_Channel')} data-qa='sidebar-create' />
-				</>}
+				{/*<Search title={t('Search')} data-qa='sidebar-search' />*/}
+				{/*{user && <>*/}
+				{/*	<Directory title={t('Directory')} />*/}
+				{/*	<Sort title={t('Filters')} />*/}
+				{/*	<CreateRoom title={t('Create_A_New_Channel')} data-qa='sidebar-create' />*/}
+				{/*</>}*/}
 				{!user && <Login title={t('Login')} />}
 			</Sidebar.TopBar.Actions>
 		</Sidebar.TopBar.Section>

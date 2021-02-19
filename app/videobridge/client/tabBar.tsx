@@ -62,7 +62,7 @@ addAction('video', ({ room }) => {
 		groups,
 		id: 'video',
 		title: 'Call',
-		icon: 'phone',
+		icon: 'video',
 		template: templateJitsi,
 		full: true,
 		order: live ? -1 : 0,

@@ -81,19 +81,19 @@ const UserDropdown = ({ user, onClose }) => {
 		onClose();
 	});
 
-	const handleLogout = useMutableCallback(() => {
-		Meteor.logout(() => {
-			callbacks.run('afterLogoutCleanUp', user);
-			Meteor.call('logoutCleanUp', user);
-			homeRoute.push({});
-			popover.close();
-		});
-	});
-
-	const handleMyAccount = useMutableCallback(() => {
-		accountRoute.push({});
-		popover.close();
-	});
+	// const handleLogout = useMutableCallback(() => {
+	// 	Meteor.logout(() => {
+	// 		callbacks.run('afterLogoutCleanUp', user);
+	// 		Meteor.call('logoutCleanUp', user);
+	// 		homeRoute.push({});
+	// 		popover.close();
+	// 	});
+	// });
+	//
+	// const handleMyAccount = useMutableCallback(() => {
+	// 	accountRoute.push({});
+	// 	popover.close();
+	// });
 
 	const handleAdmin = useMutableCallback(() => {
 		adminRoute.push({ group: 'info' });
@@ -161,11 +161,11 @@ const UserDropdown = ({ user, onClose }) => {
 			</div>
 		</>}
 
-		<Divider mi='neg-x16' mb='x16'/>
-		<div style={style}>
-			<Option icon='user' label={t('My_Account')} onClick={handleMyAccount}/>
-			<Option icon='sign-out' label={t('Logout')} onClick={handleLogout}/>
-		</div>
+		{/*<Divider mi='neg-x16' mb='x16'/>*/}
+		{/*<div style={style}>*/}
+		{/*	<Option icon='user' label={t('My_Account')} onClick={handleMyAccount}/>*/}
+		{/*	<Option icon='sign-out' label={t('Logout')} onClick={handleLogout}/>*/}
+		{/*</div>*/}
 
 	</Box>;
 };
