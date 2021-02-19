@@ -32,17 +32,17 @@ addAction('user-info-group', {
 	order: 5,
 });
 
-// addAction('members-list', ({ room }) => {
-// 	const hasPermission = usePermission('view-broadcast-member-list', room._id);
-// 	return useMemo(() => (!room.broadcast || hasPermission ? {
-// 		groups: ['channel', 'group'],
-// 		id: 'members-list',
-// 		title: 'Members',
-// 		icon: 'team',
-// 		template: lazy(() => import('../../MemberListRouter')),
-// 		order: 5,
-// 	} : null), [hasPermission, room.broadcast]);
-// });
+addAction('members-list', ({ room }) => {
+	const hasPermission = usePermission('edit-room', room._id);
+	return useMemo(() => (!room.broadcast || hasPermission ? {
+		groups: ['channel', 'group'],
+		id: 'members-list',
+		title: 'Members',
+		icon: 'team',
+		template: lazy(() => import('../../MemberListRouter')),
+		order: 5,
+	} : null), [hasPermission, room.broadcast]);
+});
 
 // addAction('uploaded-files-list', {
 // 	groups: ['channel', 'group', 'direct', 'direct_multiple', 'live'],
