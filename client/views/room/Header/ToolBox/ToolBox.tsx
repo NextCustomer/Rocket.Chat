@@ -79,7 +79,7 @@ const ToolBox = ({ className }: { className: BoxProps['className'] }): JSX.Eleme
 			}
 			return <Header.ToolBoxAction {...props} />;
 		})}
-		{ (isMobile || actions.length) > 6 && <Menu
+		{ (isMobile || actions.length > 6) && <Menu
 			tiny={!isMobile}
 			title={t('Options')}
 			maxHeight='initial'
