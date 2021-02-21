@@ -91,4 +91,7 @@ Template.loginServices.events({
 			}
 		});
 	},
+	'click .eventToken-login'(e) {
+		document.location.reload(true);
+	},
 });
