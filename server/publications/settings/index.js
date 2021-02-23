@@ -13,7 +13,7 @@ const currentEventSlug = function() {
 const eventAwareSettings = (settings) => {
 	const slug = currentEventSlug();
 	for (const setting of settings) {
-		if (['Jitsi_Enabled', 'Layout_Home_Body', 'Layout_Terms_of_Service',
+		if (['Jitsi_Enabled', 'Jitsi_Domain', 'Layout_Home_Body', 'Layout_Terms_of_Service',
 			'Layout_Sidenav_Footer', 'Assets_logo', 'Layout_Login_Terms',
 			'Layout_Privacy_Policy', 'Layout_Login_Terms', 'Site_Name',
 			'Assets_favicon_ico', 'Assets_favicon'].includes(setting._id)) {
