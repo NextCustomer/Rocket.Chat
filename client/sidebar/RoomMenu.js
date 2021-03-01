@@ -38,6 +38,7 @@ const RoomMenu = React.memo(({ rid, unread, threadUnread, alert, roomOpen, type,
 	const unreadMessages = useMethod('unreadMessages');
 	const toggleFavorite = useMethod('toggleFavorite');
 	const leaveRoom = useMethod('leaveRoom');
+	const closeLiveChatRoom = useMethod('livechat:closeRoom');
 
 	const isUnread = alert || unread || threadUnread;
 
@@ -49,6 +50,8 @@ const RoomMenu = React.memo(({ rid, unread, threadUnread, alert, roomOpen, type,
 		if (type === 'p' && !canLeavePrivate) { return false; }
 		return !(((cl != null) && !cl) || ['d', 'l'].includes(type));
 	})();
+
+	const isLiveChat = () => type === 'l';
 
 	const handleLeave = useMutableCallback(() => {
 		const leave = async () => {
@@ -99,6 +102,32 @@ const RoomMenu = React.memo(({ rid, unread, threadUnread, alert, roomOpen, type,
 		/>);
 	});
 
+	const closeLiveChat = useMutableCallback(() => {
+		const close = async () => {
+			try {
+				await closeLiveChatRoom(rid);
+				if (roomOpen) {
+					router.push({});
+				}
+				RoomManager.close(rid);
+			} catch (error) {
+				dispatchToastMessage({ type: 'error', message: error });
+			}
+			closeModal();
+		};
+
+		const warnText = roomTypes.getConfig(type).getUiText(UiTextContext.CLOSE_WARNING);
+
+		setModal(<WarningModal
+			text={t(warnText, name)}
+			confirmText={t('Yes_leave_it')}
+			close={closeModal}
+			cancel={closeModal}
+			cancelText={t('Cancel')}
+			confirm={close}
+		/>);
+	});
+
 	const handleToggleRead = useMutableCallback(async () => {
 		try {
 			if (isUnread) {
@@ -141,6 +170,10 @@ const RoomMenu = React.memo(({ rid, unread, threadUnread, alert, roomOpen, type,
 		...canLeave && { leaveRoom: {
 			label: { label: t('Leave_room'), icon: 'sign-out' },
 			action: handleLeave,
+		} },
+		...isLiveChat && { leaveRoom: {
+			label: { label: t('Close'), icon: 'sign-out' },
+			action: closeLiveChat,
 		} },
 	}), [t, handleHide, isUnread, handleToggleRead, canFavorite, isFavorite, handleToggleFavorite, canLeave, handleLeave]);
 
