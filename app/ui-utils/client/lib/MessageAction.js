@@ -181,36 +181,36 @@ Meteor.startup(async function() {
 		group: 'menu',
 	});
 
-	MessageAction.addButton({
-		id: 'quote-message',
-		icon: 'quote',
-		label: 'Quote',
-		context: ['message', 'message-mobile', 'threads'],
-		action() {
-			const { msg: message } = messageArgs(this);
-			const { input } = getChatMessagesFrom(message);
-			const $input = $(input);
-
-			let messages = $input.data('reply') || [];
-
-			messages = addMessageToList(messages, message, input);
-
-			$input
-				.focus()
-				.data('mention-user', false)
-				.data('reply', messages)
-				.trigger('dataChange');
-		},
-		condition({ subscription }) {
-			if (subscription == null) {
-				return false;
-			}
-
-			return true;
-		},
-		order: -3,
-		group: ['message', 'menu'],
-	});
+	// MessageAction.addButton({
+	// 	id: 'quote-message',
+	// 	icon: 'quote',
+	// 	label: 'Quote',
+	// 	context: ['message', 'message-mobile', 'threads'],
+	// 	action() {
+	// 		const { msg: message } = messageArgs(this);
+	// 		const { input } = getChatMessagesFrom(message);
+	// 		const $input = $(input);
+	//
+	// 		let messages = $input.data('reply') || [];
+	//
+	// 		messages = addMessageToList(messages, message, input);
+	//
+	// 		$input
+	// 			.focus()
+	// 			.data('mention-user', false)
+	// 			.data('reply', messages)
+	// 			.trigger('dataChange');
+	// 	},
+	// 	condition({ subscription }) {
+	// 		if (subscription == null) {
+	// 			return false;
+	// 		}
+	//
+	// 		return true;
+	// 	},
+	// 	order: -3,
+	// 	group: ['message', 'menu'],
+	// });
 
 	MessageAction.addButton({
 		id: 'permalink',
