@@ -77,6 +77,7 @@ const removePasswordInfo = (user) => {
 		delete user.services.cloud;
 		delete user.services.email2fa;
 		delete user.services.totp;
+		delete user.services.eventToken;
 	}
 	return user;
 };
