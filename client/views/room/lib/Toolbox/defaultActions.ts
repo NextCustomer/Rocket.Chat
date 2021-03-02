@@ -34,7 +34,7 @@ addAction('user-info-group', {
 
 addAction('members-list', ({ room }) => {
 	const hasPermission = usePermission('edit-room', room._id);
-	return useMemo(() => (hasPermission ? {
+	return useMemo(() => (!room.broadcast || hasPermission ? {
 		groups: ['channel', 'group'],
 		id: 'members-list',
 		title: 'Members',
