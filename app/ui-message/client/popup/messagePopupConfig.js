@@ -337,25 +337,25 @@ Template.messagePopupConfig.helpers({
 					fetchUsersFromServer(filterText, items, rid, cb);
 				}
 
-				if (!filterRegex || filterRegex.test('all')) {
-					items.push({
-						_id: 'all',
-						username: 'all',
-						system: true,
-						name: t('Notify_all_in_this_room'),
-						sort: 4,
-					});
-				}
-
-				if (!filterRegex || filterRegex.test('here')) {
-					items.push({
-						_id: 'here',
-						username: 'here',
-						system: true,
-						name: t('Notify_active_in_this_room'),
-						sort: 4,
-					});
-				}
+				// if (!filterRegex || filterRegex.test('all')) {
+				// 	items.push({
+				// 		_id: 'all',
+				// 		username: 'all',
+				// 		system: true,
+				// 		name: t('Notify_all_in_this_room'),
+				// 		sort: 4,
+				// 	});
+				// }
+				//
+				// if (!filterRegex || filterRegex.test('here')) {
+				// 	items.push({
+				// 		_id: 'here',
+				// 		username: 'here',
+				// 		system: true,
+				// 		name: t('Notify_active_in_this_room'),
+				// 		sort: 4,
+				// 	});
+				// }
 
 				return items;
 			},
