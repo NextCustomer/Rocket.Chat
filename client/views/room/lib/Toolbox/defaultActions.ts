@@ -33,7 +33,7 @@ addAction('user-info-group', {
 });
 
 addAction('members-list', ({ room }) => {
-	const hasPermission = usePermission('edit-room', room._id);
+	const hasPermission = usePermission('view-broadcast-member-list', room._id);
 	return useMemo(() => (!room.broadcast || hasPermission ? {
 		groups: ['channel', 'group'],
 		id: 'members-list',
