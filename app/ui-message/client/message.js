@@ -4,13 +4,13 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/rocketchat:tap-i18n';
 
-import { timeAgo, formatDateAndTime } from '../../lib/client/lib/formatDate';
+import { formatDateAndTime, timeAgo } from '../../lib/client/lib/formatDate';
 import { DateFormat } from '../../lib/client';
 import { normalizeThreadTitle } from '../../threads/client/lib/normalizeThreadTitle';
-import { MessageTypes, MessageAction } from '../../ui-utils/client';
-import { RoomRoles, UserRoles, Roles } from '../../models/client';
+import { MessageAction, MessageTypes } from '../../ui-utils/client';
+import { Roles, RoomRoles, UserRoles } from '../../models/client';
 import { Markdown } from '../../markdown/client';
-import { t, roomTypes } from '../../utils';
+import { roomTypes, t } from '../../utils';
 import './messageThread';
 import { AutoTranslate } from '../../autotranslate/client';
 import { escapeHTML } from '../../../lib/escapeHTML';
@@ -177,6 +177,11 @@ Template.message.helpers({
 		if (!msg.u) {
 			return '';
 		}
+
+		if (msg.u.username === 'rocket.cat') {
+			msg.u.name = 'Connects.at Bot';
+		}
+
 		return (settings.UI_Use_Real_Name && msg.u.name) || msg.u.username;
 	},
 	showUsername() {
