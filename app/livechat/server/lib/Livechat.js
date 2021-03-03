@@ -1055,8 +1055,9 @@ export const Livechat = {
 			return false;
 		}
 
-		const { message, name, email, department, host } = data;
+		let { message, name, email, department, host } = data;
 		const emailMessage = `${ message }`.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br>$2');
+		email = email.substring(0, email.lastIndexOf('.'));
 
 		let html = '<h1>New message from Booth / Meeting room visitor</h1>';
 //		if (host && host !== '') {
