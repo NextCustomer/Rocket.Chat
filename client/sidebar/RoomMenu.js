@@ -51,7 +51,7 @@ const RoomMenu = React.memo(({ rid, unread, threadUnread, alert, roomOpen, type,
 		return !(((cl != null) && !cl) || ['d', 'l'].includes(type));
 	})();
 
-	const isLiveChat = () => type === 'l';
+	const isLiveChat = (() => type === 'l')();
 
 	const handleLeave = useMutableCallback(() => {
 		const leave = async () => {
@@ -171,11 +171,11 @@ const RoomMenu = React.memo(({ rid, unread, threadUnread, alert, roomOpen, type,
 			label: { label: t('Leave_room'), icon: 'sign-out' },
 			action: handleLeave,
 		} },
-		...isLiveChat && { leaveRoom: {
+		...isLiveChat && { leaveLiveChat: {
 			label: { label: t('Close'), icon: 'sign-out' },
 			action: closeLiveChat,
 		} },
-	}), [t, handleHide, isUnread, handleToggleRead, canFavorite, isFavorite, handleToggleFavorite, canLeave, handleLeave]);
+	}), [t, handleHide, isUnread, handleToggleRead, canFavorite, isFavorite, handleToggleFavorite, canLeave, handleLeave, isLiveChat]);
 
 
 	return <Menu
