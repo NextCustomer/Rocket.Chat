@@ -5,7 +5,7 @@ import { hasAtLeastOnePermission, hasPermission } from '../../../app/authorizati
 import { getSettingPermissionId } from '../../../app/authorization/lib';
 import { SettingsEvents } from '../../../app/settings/server/functions/settings';
 
-const currentEventSlug = function() {
+export const currentEventSlug = function() {
 	const currentInvocation = DDP._CurrentMethodInvocation.get() || DDP._CurrentPublicationInvocation.get();
 	return currentInvocation ? currentInvocation.connection.httpHeaders.host.split('.')[0] : undefined;
 };

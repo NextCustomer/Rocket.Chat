@@ -6,6 +6,7 @@ import { Messages } from '../../../../models';
 import { settings as rcSettings } from '../../../../settings';
 import { API } from '../../../../api/server';
 import { findGuest, getRoom, settings } from '../lib/livechat';
+import { currentEventSlug } from '/server/publications/settings';
 
 API.v1.addRoute('livechat/video.call/:token', {
 	get() {
@@ -80,9 +81,10 @@ API.v1.addRoute('livechat/video.call/:token/url', {
 			if (rcSettings.get('Jitsi_URL_Room_Hash')) {
 				rname = rcSettings.get('uniqueID') + rid;
 			}
+
 			const videoCall = {
 				rid,
-				domain: rcSettings.get('Jitsi_Domain'),
+				domain: rcSettings.get(`event-${ currentEventSlug() }.Jitsi_Domain`) || rcSettings.get('Jitsi_Domain'),
 				provider: 'jitsi',
 				room: rcSettings.get('Jitsi_URL_Room_Prefix') + rname + rcSettings.get('Jitsi_URL_Room_Suffix'),
 				timeout: new Date(Date.now() + 3600 * 1000),
