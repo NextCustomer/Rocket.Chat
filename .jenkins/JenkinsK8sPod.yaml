@@ -39,3 +39,8 @@ spec:
   serviceAccount: cicd-jenkins
   nodeSelector:
     role: jenkins-agents
+  tolerations:
+    - key: role
+      operator: Equal
+      value: jenkins-agents
+      effect: NoSchedule
