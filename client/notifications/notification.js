@@ -62,7 +62,9 @@ Meteor.startup(function() {
 				const messageIsInOpenedRoom = openedRoomId === notification.payload.rid;
 				const muteFocusedConversations = getUserPreference(Meteor.userId(), 'muteFocusedConversations');
 
-				if (Layout.isEmbedded()) {
+				if (notification.payload.type === 'l' && notification.payload.name === 'New chat in queue') {
+					KonchatNotification.playSoundUnconditionally();
+				} else if (Layout.isEmbedded()) {
 					if (!hasFocus && messageIsInOpenedRoom) {
 						// Play a notification sound
 						KonchatNotification.newMessage(notification.payload.rid);

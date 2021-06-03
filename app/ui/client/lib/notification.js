@@ -100,6 +100,16 @@ export const KonchatNotification = {
 		});
 	},
 
+	playSoundUnconditionally() {
+		const userId = Meteor.userId();
+		const newMessageNotification = getUserPreference(userId, 'newMessageNotification');
+		const audioVolume = getUserPreference(userId, 'notificationsSoundVolume');
+
+		CustomSounds.play(newMessageNotification, {
+			volume: Number((audioVolume / 100).toPrecision(2)),
+		});
+	},
+
 	newMessage(rid) {
 		if (!Session.equals(`user_${ Meteor.user().username }_status`, 'busy')) {
 			const userId = Meteor.userId();
